@@ -26,12 +26,13 @@ function App() {
   }
 
   const getPixel = () => {
-    let canvas = document.getElementById('canvas')
+    const canvas = document.getElementById('canvas')
+    const ctx = canvas.getContext('2d')
     const pixelArray = []
     console.log('start')
     for (let i = 1; i <= height; i++) {
       for (let j = 1; j <= width; j++) {
-        let pixelData = canvas.getContext('2d').getImageData(j, i, 1, 1).data
+        let pixelData = ctx.getImageData(j, i, 1, 1).data
         let colorString
         if (type === 'green') {
           colorString = `rgba(${pixelData[0]}, 150, ${pixelData[2]}, ${pixelData[3]})`
