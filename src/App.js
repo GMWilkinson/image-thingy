@@ -32,106 +32,106 @@ function App() {
     console.log('start')
     for (let i = 1; i <= height; i++) {
       for (let j = 1; j <= width; j++) {
-        let pixelData = ctx.getImageData(j, i, 1, 1).data
+        const [r, g, b, a] = ctx.getImageData(j, i, 1, 1).data
         let colorString
         if (type === 'green') {
-          colorString = `rgba(${pixelData[0]}, 150, ${pixelData[2]}, ${pixelData[3]})`
+          colorString = `rgba(${r}, 150, ${b}, ${a})`
         } else if (type === 'blue') {
-          colorString = `rgba(${pixelData[0]}, ${pixelData[1]}, 150, ${pixelData[3]})`
+          colorString = `rgba(${r}, ${g}, 150, ${a})`
         } else if (type === 'red') {
-          colorString = `rgba(150, ${pixelData[1]}, ${pixelData[2]}, ${pixelData[3]})`
+          colorString = `rgba(150, ${g}, ${b}, ${a})`
         } else if (type === 'r-green') {
-          colorString = `rgba(${pixelData[0]}, ${255 - pixelData[1]}, ${pixelData[2]}, ${pixelData[3]})`
+          colorString = `rgba(${r}, ${255 - g}, ${b}, ${a})`
         } else if (type === 'r-blue') {
-          colorString = `rgba(${pixelData[0]}, ${pixelData[1]}, ${255 - pixelData[2]}, ${pixelData[3]})`
+          colorString = `rgba(${r}, ${g}, ${255 - b}, ${a})`
         } else if (type === 'r-red') {
-          colorString = `rgba(${255 - pixelData[0]}, ${pixelData[1]}, ${pixelData[2]}, ${pixelData[3]})`
+          colorString = `rgba(${255 - r}, ${g}, ${b}, ${a})`
         } else if (type === 'mix') {
-          colorString = `rgba(${pixelData[1]}, ${pixelData[2]}, ${pixelData[0]}, ${pixelData[3]})`
+          colorString = `rgba(${g}, ${b}, ${r}, ${a})`
         } else if (type === 'mix-back') {
-          colorString = `rgba(${pixelData[2]}, ${pixelData[1]}, ${pixelData[0]}, ${pixelData[3]})`
+          colorString = `rgba(${b}, ${g}, ${r}, ${a})`
         } else if (type === 'step1') {
-          colorString = `rgba(${pixelData[2]}, ${pixelData[0]}, ${pixelData[1]}, ${pixelData[3]})`
+          colorString = `rgba(${b}, ${r}, ${g}, ${a})`
         } else if (type === 'step2') {
-          colorString = `rgba(${pixelData[1]}, ${pixelData[2]}, ${pixelData[0]}, ${pixelData[3]})`
+          colorString = `rgba(${g}, ${b}, ${r}, ${a})`
         } else if (type === 'weirdy') {
-          if (pixelData[0] > 180 && pixelData[1] > 180 && pixelData[2] > 180) {
+          if (r > 180 && g > 180 && b > 180) {
             colorString = `white`
-          } else if (pixelData[0] > 150 && pixelData[1] > 150 && pixelData[2] > 150) {
+          } else if (r > 150 && g > 150 && b > 150) {
             colorString = 'papayawhip'
-          } else if (pixelData[0] > 130 && pixelData[1] > 130 && pixelData[2] > 130) {
+          } else if (r > 130 && g > 130 && b > 130) {
             colorString = 'yellow'
-          } else if (pixelData[0] > 100 && pixelData[1] > 100 && pixelData[2] > 100) {
+          } else if (r > 100 && g > 100 && b > 100) {
             colorString = 'orange'
-          } else if (pixelData[0] > 80 && pixelData[1] > 80 && pixelData[2] > 80) {
+          } else if (r > 80 && g > 80 && b > 80) {
             colorString = 'mauve'
-          } else if (pixelData[0] > 60 && pixelData[1] > 60 && pixelData[2] > 60) {
+          } else if (r > 60 && g > 60 && b > 60) {
             colorString = 'purple'
-          } else if (pixelData[0] > 40 && pixelData[1] > 40 && pixelData[2] > 40) {
+          } else if (r > 40 && g > 40 && b > 40) {
             colorString = '#2f026e'
-          } else if (pixelData[0] > 20 && pixelData[1] > 20 && pixelData[2] > 20) {
+          } else if (r > 20 && g > 20 && b > 20) {
             colorString = 'black'
           }  else {
             colorString = 'blue'
           }
         } else if (type === 'k-bots') {
-          if (pixelData[0] > 180 && pixelData[1] > 180 && pixelData[2] > 180) {
+          if (r > 180 && g > 180 && b > 180) {
             colorString = `black`
-          } else if (pixelData[0] > 150 && pixelData[1] > 150 && pixelData[2] > 150) {
+          } else if (r > 150 && g > 150 && b > 150) {
             colorString = 'papayawhip'
-          } else if (pixelData[0] > 130 && pixelData[1] > 130 && pixelData[2] > 130) {
+          } else if (r > 130 && g > 130 && b > 130) {
             colorString = 'purple'
-          } else if (pixelData[0] > 100 && pixelData[1] > 100 && pixelData[2] > 100) {
+          } else if (r > 100 && g > 100 && b > 100) {
             colorString = 'yellow'
-          } else if (pixelData[0] > 80 && pixelData[1] > 80 && pixelData[2] > 80) {
+          } else if (r > 80 && g > 80 && b > 80) {
             colorString = 'mauve'
-          } else if (pixelData[0] > 60 && pixelData[1] > 60 && pixelData[2] > 60) {
+          } else if (r > 60 && g > 60 && b > 60) {
             colorString = 'orange'
-          } else if (pixelData[0] > 40 && pixelData[1] > 40 && pixelData[2] > 40) {
+          } else if (r > 40 && g > 40 && b > 40) {
             colorString = 'red'
-          } else if (pixelData[0] > 20 && pixelData[1] > 20 && pixelData[2] > 20) {
+          } else if (r > 20 && g > 20 && b > 20) {
             colorString = 'white'
           }  else {
             colorString = 'blue'
           }
         } else if (type === 'greeny') {
-          if (pixelData[0] > 220 && pixelData[1] > 220 && pixelData[2] > 220) {
+          if (r > 220 && g > 220 && b > 220) {
             colorString = `white`
-          } else if (pixelData[0] > 200 && pixelData[1] > 200 && pixelData[2] > 200) {
+          } else if (r > 200 && g > 200 && b > 200) {
             colorString = `#e3fce1`
-          } else if (pixelData[0] > 180 && pixelData[1] > 180 && pixelData[2] > 180) {
+          } else if (r > 180 && g > 180 && b > 180) {
             colorString = `#ccfac8`
-          } else if (pixelData[0] > 150 && pixelData[1] > 150 && pixelData[2] > 150) {
+          } else if (r > 150 && g > 150 && b > 150) {
             colorString = '#a8f7a1'
-          } else if (pixelData[0] > 130 && pixelData[1] > 130 && pixelData[2] > 130) {
+          } else if (r > 130 && g > 130 && b > 130) {
             colorString = '#73f268'
-          } else if (pixelData[0] > 100 && pixelData[1] > 100 && pixelData[2] > 100) {
+          } else if (r > 100 && g > 100 && b > 100) {
             colorString = '#56db4b'
-          } else if (pixelData[0] > 80 && pixelData[1] > 80 && pixelData[2] > 80) {
+          } else if (r > 80 && g > 80 && b > 80) {
             colorString = '#42c437'
-          } else if (pixelData[0] > 60 && pixelData[1] > 60 && pixelData[2] > 60) {
+          } else if (r > 60 && g > 60 && b > 60) {
             colorString = '#24991a'
-          } else if (pixelData[0] > 40 && pixelData[1] > 40 && pixelData[2] > 40) {
+          } else if (r > 40 && g > 40 && b > 40) {
             colorString = '#0f7a06'
-          } else if (pixelData[0] > 20 && pixelData[1] > 20 && pixelData[2] > 20) {
+          } else if (r > 20 && g > 20 && b > 20) {
             colorString = '#063002'
           }  else {
             colorString = '#18f705'
           }
         } else if (type === 'b-w1') {
-          colorString = `rgba(${pixelData[0]}, ${pixelData[0]}, ${pixelData[0]}, ${pixelData[3]})`
+          colorString = `rgba(${r}, ${r}, ${r}, ${a})`
         } else if (type === 'b-w2') {
-          colorString = `rgba(${pixelData[1]}, ${pixelData[1]}, ${pixelData[1]}, ${pixelData[3]})`
+          colorString = `rgba(${g}, ${g}, ${g}, ${a})`
         } else if (type === 'b-w3') {
-          colorString = `rgba(${pixelData[2]}, ${pixelData[2]}, ${pixelData[2]}, ${pixelData[3]})`
+          colorString = `rgba(${b}, ${b}, ${b}, ${a})`
         } else if (type === 'opposite') {
-          colorString = `rgba(${255 - pixelData[1]}, ${255 - pixelData[2]}, ${255 - pixelData[0]}, ${pixelData[3]})`
+          colorString = `rgba(${255 - g}, ${255 - b}, ${255 - r}, ${a})`
         } else if (type === 'standard') {
-          colorString = `rgba(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]}, ${pixelData[3]})`
+          colorString = `rgba(${r}, ${g}, ${b}, ${a})`
         } else {
-          colorString = `rgba(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]}, ${pixelData[3]})`
+          colorString = `rgba(${r}, ${g}, ${b}, ${a})`
         }
-        if (pixelData[3] !== 0) {
+        if (a !== 0) {
           pixelArray.push(<div style={{width: 1, height: 1, backgroundColor: colorString}}></div> )
         } else {
           pixelArray.push(<div style={{width: 1, height: 1, backgroundColor: 'black'}}></div> )
