@@ -1,4 +1,4 @@
-import { fireEvent } from '@testing-library/react';
+// import { fireEvent } from '@testing-library/react';
 import React, {useState, useEffect} from 'react'
 import './App.css'
 
@@ -9,22 +9,24 @@ function App() {
     pixelScale = 1,
     inverseScale = 1/pixelScale;
 
-  const [drawnImage, setDrawnImage] = useState(null)
-  const [pixels, setPixels] = useState(null)
+  const [pixelData, setPixelData] = useState(null)
   const [type, setType] = useState(null)
+  const [appliedType, setAppliedType] = useState(null)
+  const [convertedPixels, setConvertedPixels] = useState(null)
+  const [pixelDivArray, setPixelDivArray] = useState(null)
 
   useEffect(() => {
-    createCanvas()
-    if (pixels) {
-      console.log('draw')
-      setDrawnImage(pixels)
+    if (type !== appliedType) {
+      setAppliedType(type)
+      setConvertedPixels(applyEffect(type, pixelData))
     }
-  });
+  }, [pixelData, type, appliedType]);
 
-  const createCanvas = () => {
+  const drawToCanvas = () => {
+    console.log('drawing to canvas')
     let img = document.getElementById('my-image')
-    let canvas = document.getElementById('canvas')
     let box = document.getElementById('box')
+    let canvas = document.getElementById('canvas')    
     let context = canvas.getContext('2d')
     canvas.width = img.width
     canvas.height = img.height
@@ -33,17 +35,19 @@ function App() {
     context.scale(inverseScale, inverseScale)
     context.drawImage(img, 0, 0, img.width, img.height)
     box.style = `width: ${img.width}px; height: ${img.height}px`
+    console.log('image on canvas')
+    setPixelData(getPixelData);
   }
 
-  const nameToRgba = (name) => {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = 1;
-    canvas.height = 1;
-    context.fillStyle = name;
-    context.fillRect(0,0,1,1);
-    return [...context.getImageData(0,0,1,1).data];
-  }
+  // const nameToRgba = (name) => {
+  //   const canvas = document.createElement('canvas');
+  //   const context = canvas.getContext('2d');
+  //   canvas.width = 1;
+  //   canvas.height = 1;
+  //   context.fillStyle = name;
+  //   context.fillRect(0,0,1,1);
+  //   return [...context.getImageData(0,0,1,1).data];
+  // }
 
   const namedColors = {
     "white":[255,255,255,255],
@@ -129,40 +133,65 @@ function App() {
     }
   }
 
-  const getPixel = () => {
+  const getPixelData = () => {
+    console.log('getting pixel data from canvas')
     const canvas = document.getElementById('canvas')
     const ctx = canvas.getContext('2d')
-    const pixelData = ctx.getImageData(0,0,width, height).data
-    const pixelArray = []
-    let numberOfPixels = width * height
-    console.log('start')
+    return ctx.getImageData(0,0,width, height).data
+  }
+
+  const applyEffect = (type, pixelData) => {
+    console.log('applying effect to pixel data')
+    const effectFunction = effect[type] || effect.default
+    const convertedPixelData = []
+    let numberOfPixels = pixelData.length * 0.25
+    for (numberOfPixels; numberOfPixels; numberOfPixels--) {
+      const [r, g, b, a] = pixelData.slice((numberOfPixels - 1) * 4, numberOfPixels * 4)  
+      const convertedRgba = effectFunction(r, g, b, a)
+      convertedPixelData.unshift(...convertedRgba)
+      if (!(numberOfPixels % 10000)) {
+        console.log(`${numberOfPixels} pixels left`)
+      }
+    }
+    console.log('converted pixels now exist')
+    return convertedPixelData
+  }
+
+  const mapPixelsToDivArray = (pixelData) => {
+    console.log('building div array')
+    const pixelDivArray = []
+    let numberOfPixels = pixelData.length * 0.25
     for (numberOfPixels; numberOfPixels; numberOfPixels--) {
       const [r, g, b, a] = pixelData.slice((numberOfPixels - 1) * 4, numberOfPixels * 4)
       let colorString
       if (a === 0) {
         colorString = 'black'
       } else {
-        const effectFunction = effect[type] || effect.default
-        const convertedRgba = effectFunction(r, g, b, a)
-        colorString = toColorString(convertedRgba)
+        colorString = toColorString([r, g, b, a])
       }
-      pixelArray.unshift(<div style={{width: pixelScale, height: pixelScale, backgroundColor: colorString}}></div> )
+      pixelDivArray.unshift(<div key={numberOfPixels} style={{width: pixelScale, height: pixelScale, backgroundColor: colorString}}></div> )
     }
-    console.log('finish')
-    setPixels(pixelArray)
+    console.log('div array built')
+    return pixelDivArray
   }
 
   const toColorString = (rgba) => `rgba(${rgba.join()})`
+
+  const drawImage = () => {
+    setPixelDivArray(mapPixelsToDivArray(convertedPixels))
+  }
 
   return (
     <div className="App">
       <main className="App-header">
         <img 
           id="my-image" 
+          alt="source"
           src={process.env.PUBLIC_URL + '/strad.jpg'} 
+          onLoad={() => drawToCanvas()}
         />
         <div id="box" className="box">
-          {drawnImage ? [...drawnImage]: null}
+          {pixelDivArray ? [...pixelDivArray]: null}
         </div>
         <canvas style={{visibility: 'hidden'}} id="canvas"></canvas>
       </main>
@@ -186,7 +215,7 @@ function App() {
         <button onClick={() => setType('b-w2')} >Black and white 2</button>
         <button onClick={() => setType('b-w3')} >Black and white 3</button>
         <button onClick={() => setType('standard')} >Standard</button>
-        <button onClick={getPixel} >Clickeroo</button>
+        <button onClick={drawImage} >Clickeroo</button>
       </aside>
     </div>
   );
