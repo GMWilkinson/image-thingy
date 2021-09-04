@@ -13,7 +13,7 @@ function App() {
   const [type, setType] = useState(null)
   const [appliedType, setAppliedType] = useState(null)
   const [convertedPixels, setConvertedPixels] = useState(null)
-  const [pixelDivArray, setPixelDivArray] = useState(null)
+  // const [pixelDivArray, setPixelDivArray] = useState(null)
 
   useEffect(() => {
     if (type !== appliedType) {
@@ -157,28 +157,50 @@ function App() {
     return convertedPixelData
   }
 
-  const mapPixelsToDivArray = (pixelData) => {
-    console.log('building div array')
-    const pixelDivArray = []
-    let numberOfPixels = pixelData.length * 0.25
+  // const mapPixelsToDivArray = (pixelData) => {
+  //   console.log('building div array')
+  //   const pixelDivArray = []
+  //   let numberOfPixels = pixelData.length * 0.25
+  //   for (numberOfPixels; numberOfPixels; numberOfPixels--) {
+  //     const [r, g, b, a] = pixelData.slice((numberOfPixels - 1) * 4, numberOfPixels * 4)
+  //     let colorString
+  //     if (a === 0) {
+  //       colorString = 'black'
+  //     } else {
+  //       colorString = toColorString([r, g, b, a])
+  //     }
+  //     pixelDivArray.unshift(<div key={numberOfPixels} style={{width: pixelScale, height: pixelScale, backgroundColor: colorString}}></div> )
+  //   }
+  //   console.log('div array built')
+  //   return pixelDivArray
+  // }
+
+  const injectDivArray = (convertedPixels) => {
+    console.log('building box fragment')
+    const box = document.getElementById('box')
+    box.innerHTML = ''
+    const boxFragment = document.createDocumentFragment()
+    let numberOfPixels = convertedPixels.length * 0.25
     for (numberOfPixels; numberOfPixels; numberOfPixels--) {
-      const [r, g, b, a] = pixelData.slice((numberOfPixels - 1) * 4, numberOfPixels * 4)
-      let colorString
-      if (a === 0) {
-        colorString = 'black'
-      } else {
-        colorString = toColorString([r, g, b, a])
+      const rgba = convertedPixels.slice((numberOfPixels - 1) * 4, numberOfPixels * 4)
+      const pixelElement = document.createElement('div')
+      pixelElement.style.cssText = `width:${pixelScale}px;height:${pixelScale}px;background-color:${toColorString(rgba)}`
+      boxFragment.insertBefore(pixelElement, boxFragment.firstChild)
+      if (!(numberOfPixels % 10000)) {
+        console.log(pixelElement)
+        console.log(`${numberOfPixels} pixels left`)
       }
-      pixelDivArray.unshift(<div key={numberOfPixels} style={{width: pixelScale, height: pixelScale, backgroundColor: colorString}}></div> )
     }
-    console.log('div array built')
-    return pixelDivArray
+    console.log('appending box fragment')
+    box.appendChild(boxFragment)
+    console.log('appended box fragment')
   }
 
   const toColorString = (rgba) => `rgba(${rgba.join()})`
 
   const drawImage = () => {
-    setPixelDivArray(mapPixelsToDivArray(convertedPixels))
+    //setPixelDivArray(mapPixelsToDivArray(convertedPixels))
+    injectDivArray(convertedPixels)
   }
 
   return (
@@ -191,7 +213,7 @@ function App() {
           onLoad={() => drawToCanvas()}
         />
         <div id="box" className="box">
-          {pixelDivArray ? [...pixelDivArray]: null}
+          {/* {pixelDivArray ? [...pixelDivArray]: null} */}
         </div>
         <canvas style={{visibility: 'hidden'}} id="canvas"></canvas>
       </main>
