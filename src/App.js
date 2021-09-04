@@ -3,8 +3,11 @@ import './App.css'
 
 
 function App() {
-  const width = 200
-  const height = 300
+  let width,
+    height,
+    pixelScale = 1,
+    inverseScale = 1/pixelScale;
+
   const [drawnImage, setDrawnImage] = useState(null)
   const [pixels, setPixels] = useState(null)
   const [type, setType] = useState(null)
@@ -20,9 +23,15 @@ function App() {
   const createCanvas = () => {
     let img = document.getElementById('my-image')
     let canvas = document.getElementById('canvas')
+    let box = document.getElementById('box')
+    let context = canvas.getContext('2d')
     canvas.width = img.width
     canvas.height = img.height
-    canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height)
+    width = Math.floor(img.width * inverseScale)
+    height = Math.floor(img.height * inverseScale)
+    context.scale(inverseScale, inverseScale)
+    context.drawImage(img, 0, 0, img.width, img.height)
+    box.style = `width: ${img.width}px; height: ${img.height}px`
   }
 
   const effect = {
@@ -96,7 +105,7 @@ function App() {
         const effectFunction = effect[type] || effect.default
         colorString = effectFunction(r, g, b, a)
       }
-      pixelArray.unshift(<div style={{width: 1, height: 1, backgroundColor: colorString}}></div> )
+      pixelArray.unshift(<div style={{width: pixelScale, height: pixelScale, backgroundColor: colorString}}></div> )
     }
     console.log('finish')
     setPixels(pixelArray)
@@ -107,9 +116,9 @@ function App() {
       <main className="App-header">
         <img 
           id="my-image" 
-          src={process.env.PUBLIC_URL + '/400.jpg'} 
+          src={process.env.PUBLIC_URL + '/strad.jpg'} 
         />
-        <div className="box">
+        <div id="box" className="box">
           {drawnImage && drawnImage.map((pixel) => 
             pixel
           )}
