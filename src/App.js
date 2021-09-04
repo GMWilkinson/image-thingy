@@ -162,9 +162,7 @@ function App() {
           src={process.env.PUBLIC_URL + '/strad.jpg'} 
         />
         <div id="box" className="box">
-          {drawnImage && drawnImage.map((pixel) => 
-            pixel
-          )}
+          {drawnImage ? [...drawnImage]: null}
         </div>
         <canvas style={{visibility: 'hidden'}} id="canvas"></canvas>
       </main>
