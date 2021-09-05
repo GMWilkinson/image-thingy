@@ -135,6 +135,23 @@ const filterEffects = {
       return getRgba('#18f705')
     }
   },
+  'posTest': {
+    name: 'Positional',
+    function: (r, g, b, a, w, h, i) => {
+      if(!(i%10000)){console.log(r,g,b,a,w,h,i)}
+      const _x = i % w // work out x coordinate
+      const _r = _x / w * 255 // higher x is more red 
+      const _y = (i - _x) / w // work out y coordinate
+      const _g = _y / h * 255 // higher y is more green
+      const _b = i / w * h * 255 // higher pixel number is more blue
+      return [
+        (_r + r) * 0.5, // average with source r
+        (_g + g) * 0.5, // average with source g
+        (_b + b) * 0.5, // average with source b
+        a // be cannadian, idk
+      ]
+    }
+  },
   'standard': {
 		name: 'Standard',
 		function: (r, g, b, a) => [r, g, b, a]

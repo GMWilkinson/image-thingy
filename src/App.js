@@ -5,23 +5,30 @@ import { toColorString, applyEffect } from './util'
 import filterEffect from './filterEffects'
 
 function App() {
-  let width,
-    height,
-    pixelScale = 1,
-    inverseScale = 1/pixelScale;
+  const pixelScale = 1
+  const inverseScale = 1/pixelScale
 
+  const [width, setWidth] = useState(null)
+  const [height, setHeight] = useState(null)
   const [pixelData, setPixelData] = useState(null)
   const [type, setType] = useState(null)
   const [appliedType, setAppliedType] = useState(null)
   const [convertedPixels, setConvertedPixels] = useState(null)
 
   useEffect(() => {
+    if (!!width && !!height) {
+      setPixelData(getPixelData(width, height));  
+    }
+  }, [width, height])
+
+  useEffect(() => {
     if (type !== appliedType) {
       setAppliedType(type)
       const effect = filterEffect[type] || filterEffect.standard
-      setConvertedPixels(applyEffect(effect.function, pixelData))
+      console.log('WIDTH: ', width)
+      setConvertedPixels(applyEffect(effect.function, pixelData, width))
     }
-  }, [pixelData, type, appliedType]);
+  }, [pixelData, type, appliedType, width]);
 
   const drawToCanvas = () => {
     console.log('drawing to canvas')
@@ -31,16 +38,15 @@ function App() {
     let context = canvas.getContext('2d')
     canvas.width = img.width
     canvas.height = img.height
-    width = Math.floor(img.width * inverseScale)
-    height = Math.floor(img.height * inverseScale)
     context.scale(inverseScale, inverseScale)
     context.drawImage(img, 0, 0, img.width, img.height)
     box.style = `width: ${img.width}px; height: ${img.height}px`
     console.log('image on canvas')
-    setPixelData(getPixelData());
+    setWidth(Math.floor(img.width * inverseScale))
+    setHeight(Math.floor(img.height * inverseScale))
   }
 
-  const getPixelData = () => {
+  const getPixelData = (width, height) => {
     console.log('getting pixel data from canvas')
     const canvas = document.getElementById('canvas')
     const ctx = canvas.getContext('2d')
