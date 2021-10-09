@@ -52,23 +52,13 @@ function App() {
   }, [loadingState, imageData])
 
   useEffect(() => {
-    // set output width/height
-    if (loadingState === 'loaded') {
-      // hard-coded source image index >_<
-      const width = imageData[imageIndex].width
-      const height = imageData[imageIndex].height
-      let box = document.getElementById('box')
-      box.style = `width: ${width}px; height: ${height}px`
-    }
-  }, [loadingState, imageData, imageIndex])
-
-  useEffect(() => {
     // kick off applying a filter to pixeldata
     if (type !== appliedType) {
       setAppliedType(type)
       const effect = filterEffect[type] || filterEffect.standard
       const pixelData = imageData[imageIndex].data
       const width = imageData[imageIndex].width
+      // apply effect to source image data
       setConvertedPixels(applyEffect(effect.function, pixelData, width))
     }
   }, [imageData, type, appliedType, imageIndex]);
@@ -107,7 +97,7 @@ function App() {
     }
   }
 
-  const injectDivArray = (convertedPixels) => {
+  const injectDivArray = (convertedPixels, width, height) => {
     console.log('building box fragment')
     const box = document.getElementById('box')
     box.innerHTML = ''
@@ -122,12 +112,15 @@ function App() {
         console.log(`${numberOfPixels} pixels left`)
       }
     }
+    box.style = `width: ${width}px; height: ${height}px`
     box.appendChild(boxFragment)
     console.log('appended box fragment')
   }
 
   const drawImage = () => {
-    injectDivArray(convertedPixels)
+    const width = imageData[imageIndex].width
+    const height = imageData[imageIndex].height
+    injectDivArray(convertedPixels, width, height)
   }
 
   return (
