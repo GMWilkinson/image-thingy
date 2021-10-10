@@ -1,15 +1,15 @@
 // import { fireEvent } from '@testing-library/react';
 import React, {useState, useEffect, useRef} from 'react'
 import './App.css'
-import { toColorString, applyEffect } from './util'
+import { toColorString, applyEffect, mixEffects } from './util'
 import filterEffect from './filterEffects'
 
 const assetsPath = process.env.PUBLIC_URL
 
 function App() {
   const sourceImages = {
-    'small': `${assetsPath}/400.jpg`,
-    'default': `${assetsPath}/strad.jpg`
+    'small': `${assetsPath}/toadhat2.png`,
+    'default': `${assetsPath}/400.jpg`
   }
 
   const [loadingState, setLoadingState] = useState(null)
@@ -123,6 +123,18 @@ function App() {
     injectDivArray(convertedPixels, width, height)
   }
 
+  const switchImage = (index) => {
+    setImageIndex(index)
+  }
+
+  const mixEmUp = () => {
+    const width = imageData[imageIndex].width
+    const height = imageData[imageIndex].height
+    const effect = filterEffect[type] || filterEffect.standard
+    const mixedPixels = mixEffects(imageData, effect.function, height)
+    injectDivArray(mixedPixels, width, height)
+  }
+
   return (
     <div className="App">
       <main className="App-header">
@@ -132,7 +144,7 @@ function App() {
               alt={data.key}
               key={data.key}
               src={data.canvas.toDataURL()}
-              onClick={()=>setImageIndex(index)}
+              onClick={()=>switchImage(index)}
             />
           })}
         </div>
@@ -149,6 +161,7 @@ function App() {
             {filterEffect[key].name}
           </button>)
         }
+        <button onClick={mixEmUp} >Start mixing</button>
         <button onClick={drawImage} >Clickeroo</button>
       </aside>
     </div>

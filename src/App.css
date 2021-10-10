@@ -12,7 +12,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  width: 90%;
+  width: 100%;
 }
 
 .App-link {
@@ -33,10 +33,12 @@ img {
 }
 
 .buttons {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 10%;
+  overflow: hidden;
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  color: white;
 }
 
 button {
