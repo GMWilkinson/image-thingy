@@ -55,11 +55,38 @@ const mixEffects = (images, effectFunction, height) => {
   return mixedPixelData
 }
 
+const applyEdgeDetect = (pixelData, width) => {
+  const convertedPixelData = []
+  let dataPoints = pixelData.length
+  const w4 = width * 4;
+  for (dataPoints; dataPoints; dataPoints--) { 
+    const pointAbove = pixelData[dataPoints-w4] || 0
+    const pointLeft = pixelData[dataPoints-4] || 0
+    const pointRight = pixelData[dataPoints+4] || 0
+    const pointBelow = pixelData[dataPoints+w4] || 0
+    const thisPoint = pixelData[dataPoints]
+    let edgeDiff = Math.max(
+      Math.abs(thisPoint - pointAbove),
+      Math.abs(thisPoint - pointLeft),
+      Math.abs(thisPoint - pointRight),
+      Math.abs(thisPoint - pointBelow)
+    )
+    if (edgeDiff < 15) edgeDiff = 0;
+    convertedPixelData.unshift(edgeDiff)
+    if (!(dataPoints % 10000)) {
+      console.log(`${dataPoints} pixels left`)
+    }
+  }
+  console.log('converted pixels now exist')
+  return convertedPixelData
+}
+
 const toColorString = (rgba) => `rgba(${rgba.join()})`
 
 module.exports = {
   nameToRgba,
   applyEffect,
   mixEffects,
-  toColorString
+  toColorString,
+  applyEdgeDetect
 }

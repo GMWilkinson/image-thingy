@@ -1,7 +1,12 @@
 // import { fireEvent } from '@testing-library/react';
 import React, {useState, useEffect, useRef} from 'react'
 import './App.css'
-import { toColorString, applyEffect, mixEffects } from './util'
+import {
+  toColorString,
+  applyEffect,
+  mixEffects,
+  applyEdgeDetect
+} from './util'
 import filterEffect from './filterEffects'
 
 const assetsPath = process.env.PUBLIC_URL
@@ -55,11 +60,18 @@ function App() {
     // kick off applying a filter to pixeldata
     if (type !== appliedType) {
       setAppliedType(type)
-      const effect = filterEffect[type] || filterEffect.standard
-      const pixelData = imageData[imageIndex].data
-      const width = imageData[imageIndex].width
-      // apply effect to source image data
-      setConvertedPixels(applyEffect(effect.function, pixelData, width))
+      if (type === 'edgeDetect') {
+        setConvertedPixels(applyEdgeDetect(
+          imageData[imageIndex].data,
+          imageData[imageIndex].width
+        ))
+      } else {
+        const effect = filterEffect[type] || filterEffect.standard
+        const pixelData = imageData[imageIndex].data
+        const width = imageData[imageIndex].width
+        // apply effect to source image data
+        setConvertedPixels(applyEffect(effect.function, pixelData, width))
+      }
     }
   }, [imageData, type, appliedType, imageIndex]);
 
@@ -162,6 +174,11 @@ function App() {
           </button>)
         }
         <button onClick={mixEmUp} >Start mixing</button>
+        <button
+          onClick={() => setType('edgeDetect')}
+        >
+          edgeDetect
+        </button>
         <button onClick={drawImage} >Clickeroo</button>
       </aside>
     </div>
