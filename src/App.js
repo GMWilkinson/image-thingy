@@ -5,7 +5,8 @@ import {
   toColorString,
   applyEffect,
   mixEffects,
-  applyEdgeDetect
+  applyEdgeDetect,
+  convolve
 } from './util'
 import filterEffect from './filterEffects'
 
@@ -65,6 +66,8 @@ function App() {
           imageData[imageIndex].data,
           imageData[imageIndex].width
         ))
+      } else if (type === 'convolve') {
+        setConvertedPixels(convolve(imageData[imageIndex].data, imageData[imageIndex]))
       } else {
         const effect = filterEffect[type] || filterEffect.standard
         const pixelData = imageData[imageIndex].data
@@ -174,11 +177,8 @@ function App() {
           </button>)
         }
         <button onClick={mixEmUp} >Start mixing</button>
-        <button
-          onClick={() => setType('edgeDetect')}
-        >
-          edgeDetect
-        </button>
+        <button onClick={() => setType('edgeDetect')}>edgeDetect</button>
+        <button onClick={() => setType('convolve')}>convolve</button>
         <button onClick={drawImage} >Clickeroo</button>
       </aside>
     </div>
