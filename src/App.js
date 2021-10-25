@@ -8,6 +8,7 @@ import {
   applyEdgeDetect,
   convolve
 } from './util'
+import kernels from './kernels'
 import filterEffect from './filterEffects'
 
 const assetsPath = process.env.PUBLIC_URL
@@ -67,8 +68,22 @@ function App() {
           imageData[imageIndex].width
         ))
       } else if (type === 'convolve') {
-        //const bw = applyEffect(filterEffect.greyscale.function, imageData[imageIndex].data)
-        setConvertedPixels(convolve(imageData[imageIndex].data, imageData[imageIndex].width))
+        const bwPixels = applyEffect(
+          filterEffect.greyscale.function,
+          imageData[imageIndex].data
+        )
+        const blurPixels = convolve(
+          bwPixels,
+          imageData[imageIndex].width,
+          kernels.blur
+        )
+        setConvertedPixels(
+          convolve(
+            blurPixels,
+            imageData[imageIndex].width,
+            kernels.edgeDetect
+          )
+        )
       } else {
         const effect = filterEffect[type] || filterEffect.standard
         const pixelData = imageData[imageIndex].data
