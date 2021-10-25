@@ -67,7 +67,8 @@ function App() {
           imageData[imageIndex].width
         ))
       } else if (type === 'convolve') {
-        setConvertedPixels(convolve(imageData[imageIndex].data, imageData[imageIndex]))
+        //const bw = applyEffect(filterEffect.greyscale.function, imageData[imageIndex].data)
+        setConvertedPixels(convolve(imageData[imageIndex].data, imageData[imageIndex].width))
       } else {
         const effect = filterEffect[type] || filterEffect.standard
         const pixelData = imageData[imageIndex].data

@@ -152,6 +152,13 @@ const filterEffects = {
       ]
     }
   },
+  'greyscale': {
+    name: 'Greyscale',
+    function: (r,g,b,a) => {
+      const grey = (r+g+b)*0.3333
+      return [grey,grey,grey,a]
+    }
+  },
   'standard': {
 		name: 'Standard',
 		function: (r, g, b, a) => [r, g, b, a]
