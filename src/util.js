@@ -55,7 +55,51 @@ const mixEffects = (images, effectFunction, height) => {
   return mixedPixelData
 }
 
+const convolve = (
+  pixelData = [],
+  width = 0,
+  kernel = {
+    mask: [
+      [0,0,0],
+      [0,1,0],
+      [0,0,0]
+    ],
+    normal: 1
+  }
+) => {
+  const convolution = []
+  const maskSize = kernel.mask.length
+  const maskOffset = (maskSize - 1) * 0.5
+  const factor = 1/kernel.normal
+  const w4 = width * 4
+  let pixelYOffset = 0
+  let pixelXOffset = 0
+  let pointsLeft = pixelData.length - 1
+  for (pointsLeft; pointsLeft >= 0; pointsLeft--) {
+    let newValue = pixelData[pointsLeft] // original
+    if ((pointsLeft + 1) % 4) {
+      let total = 0;
+      for (let i = 0; i < maskSize; i++) {
+        pixelYOffset = (i - maskOffset) * w4
+        for (let j = 0; j < maskSize; j++) {
+          pixelXOffset = (j - maskOffset) * 4
+          const pixelValue = pixelData[pointsLeft + pixelXOffset + pixelYOffset]
+          total += kernel.mask[i][j] * (pixelValue !== undefined ? pixelValue : newValue)
+        }
+      }
+      newValue = total * factor
+    }
+    convolution.unshift(newValue)
+    if (!(pointsLeft % 10000)) {
+      console.log(`${pointsLeft} pixels left`)
+    }
+  }
+  console.log('converted pixels now exist')
+  return convolution
+}
+
 const applyEdgeDetect = (pixelData, width) => {
+  // should be, black&white, then convolve with edge detect kernel
   const convertedPixelData = []
   let dataPoints = pixelData.length
   const w4 = width * 4;
@@ -73,9 +117,7 @@ const applyEdgeDetect = (pixelData, width) => {
     )
     if (edgeDiff < 15) edgeDiff = 0;
     convertedPixelData.unshift(edgeDiff)
-    if (!(dataPoints % 10000)) {
-      console.log(`${dataPoints} pixels left`)
-    }
+    
   }
   console.log('converted pixels now exist')
   return convertedPixelData
@@ -88,5 +130,6 @@ module.exports = {
   applyEffect,
   mixEffects,
   toColorString,
-  applyEdgeDetect
+  applyEdgeDetect,
+  convolve
 }
